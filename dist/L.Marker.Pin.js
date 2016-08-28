@@ -1908,7 +1908,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 			*/
 
-			get PinsHtmlElement ( ) { return _Pins.asHtmlElement ( _PinsHtmlOptions ); }
+			get PinsHtmlElement ( ) { return _Pins.asHtmlElement ( _PinsHtmlOptions ); },
+			
+			/* 
+			
+			--- LatLngBounds ---
+			
+			The pins LatLngBounds object ( see leaflet documentation )
+			
+			*/
+
+			get LatLngBounds ( ) { return _Pins.LatLngBounds; }
 		};
 	};
 

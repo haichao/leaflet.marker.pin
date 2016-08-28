@@ -524,6 +524,9 @@ Default value:
 	urlLength : 9999
 }
 ```
+### LatLngBounds property
+
+The LatLngBounds of the pins. See leaflet documentation for more about the LatLngBounds
 
 ## Know limitations and problems
 
