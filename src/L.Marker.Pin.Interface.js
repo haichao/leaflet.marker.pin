@@ -280,6 +280,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			parsePins : function ( PinsJsonString, Map ) {
 				_Pins.parse ( PinsJsonString, Map );
 			},
+			
+			/* 
+			--- toGeoJSON ( ) method --- 
+			
+			This method returns the pins as a GeoJSON object
+
+			*/
+
+			toGeoJSON : function ( ) {
+				return _Pins.toGeoJSON ( );
+			},
+
+			/* 
+			--- pointToLayer ( ) method --- 
+			
+			This method must be used to recreate the pins from a L.geoJson object
+
+			*/
+			
+			pointToLayer: function ( feature, latlng ) {
+				return _Pins.pointToLayer ( feature, latlng ) ;
+			},
 	
 			/* --- public properties --- */
 			
@@ -289,7 +311,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			The relase number - read only
 
 			*/
-			get Release ( ) { return '1.2.0'; },
+			get Release ( ) { return '1.2.1'; },
 
 			/* 
 			--- UserLanguage  ---
@@ -367,7 +389,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 			*/
 
-			get PinsHtmlElement ( ) { return _Pins.asHtmlElement ( _PinsHtmlOptions ); }
+			get PinsHtmlElement ( ) { return _Pins.asHtmlElement ( _PinsHtmlOptions ); },
+			
+			/* 
+			
+			--- LatLngBounds ---
+			
+			The pins LatLngBounds object ( see leaflet documentation )
+			
+			*/
+
+			get LatLngBounds ( ) { return _Pins.LatLngBounds; }
 		};
 	};
 

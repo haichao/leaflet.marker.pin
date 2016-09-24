@@ -67,6 +67,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			_Translator = L.marker.pin.translator ( );
 		}
 
+		var _Categories;
+		if ( typeof module !== 'undefined' && module.exports ) {
+			_Categories = require ('./L.Marker.Pin.Categories' );
+		}
+		else {
+			_Categories = L.marker.pin.categories ( );
+		}
+		
 		/* --- private methods --- */
 
 		/* 
@@ -145,8 +153,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					if ( options.textClass ) {
 						TextElement.className = options.textClass;
 					}
-					var TextNode = document.createTextNode ( Pin.options.text );
-					TextElement.appendChild ( TextNode );
+					TextElement.innerHTML = Pin.options.text;
 					PinElement.appendChild ( TextElement );
 				}
 
@@ -156,8 +163,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					if ( options.addressClass ) {
 						AddressElement.className = options.addressClass;
 					}
-					var AddressNode = document.createTextNode ( _Translator.getText ( 'L.Marker.Pin.Pins.asHtmlElement.Address' ) + Pin.options.address );
-					AddressElement.appendChild ( AddressNode );
+					AddressElement.innerHTML = _Translator.getText ( 'L.Marker.Pin.Pins.asHtmlElement.Address' ) + Pin.options.address;
 					PinElement.appendChild ( AddressElement );
 				}
 
@@ -167,8 +173,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					if ( options.phoneClass ) {
 						PhoneElement.className = options.phoneClass;
 					}
-					var PhoneNode = document.createTextNode ( _Translator.getText ( 'L.Marker.Pin.Pins.asHtmlElement.Phone' ) + Pin.options.phone );
-					PhoneElement.appendChild ( PhoneNode );
+					PhoneElement.innerHTML = _Translator.getText ( 'L.Marker.Pin.Pins.asHtmlElement.Phone' ) + Pin.options.phone;
 					PinElement.appendChild ( PhoneElement );
 				}
 
@@ -334,7 +339,58 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				
 				return -1;
 			},
+			
 
+			/* 
+			--- pointToLayer ( feature, latlng ) method --- 
+			
+			this method add a pin to the collection from GeoJSON feature
+			
+			Parameters : 
+			- feature : the GeoJSON object with pin's data 
+			- latlng : the position of the pin
+			
+			Return :
+			- a new pin to add to the map
+
+			*/
+
+			pointToLayer: function ( feature, latlng ) {
+				var Pin = L.marker.pin ( 
+					latlng,
+					{
+						"text" : feature.properties.text,
+						"phone" : feature.properties.phone,
+						"url" : feature.properties.url,
+						"address" : feature.properties.address,
+						"pinCategory" : _Categories.getCategory ( feature.properties.categoryId ),
+						"icon" : _Categories.getCategory ( feature.properties.categoryId ).CategoryIcon,
+						"draggable" : true,
+						"className" : 'Pin',
+						"title" : _Categories.getCategory ( feature.properties.categoryId ).CategoryName,
+					}
+				);
+
+				Pin.bindPopup ( Pin.getHtml ( ) );
+				
+				var ContextMenu;
+				if ( typeof module !== 'undefined' && module.exports ) {
+					ContextMenu = require ('./L.Marker.Pin.ContextMenu' );
+				}
+				else {
+					ContextMenu = L.marker.pin.contextmenu;
+				}
+				
+				Pin.on ( 'add', function ( event ) {this.options.map = event.target._map;} );
+				Pin.on ( 'contextmenu', ContextMenu ); 
+				Pin.on ( 'dblclick', ContextMenu);
+				Pin.on ( 'dragend', this.CallbackFunction ); 
+				
+				this.push ( Pin );
+				
+				return Pin;
+			},
+			
 			/* 
 			--- order ( OldPos, NewPos, AfterNewPos ) method --- 
 
@@ -517,6 +573,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			asHtmlElement : function ( options ) {
 				return _asHtmlElement ( options );
 			},
+			
+			/* 
+			--- toGeoJSON ( ) method --- 
+			
+			This method returns the pins as a GeoJSON object
+
+			*/
+
+			toGeoJSON : function ( ) {
+				var Features = [];
+				for ( var Counter = 0; Counter < _Pins.length; Counter++) {
+					Features.push ( _Pins [ Counter ].toGeoJSON ( ) );
+				}
+				
+				return {
+					"type": "FeatureCollection",
+					"features" : Features
+				};
+				
+			},
 		
 			/* --- public properties --- */
 
@@ -532,7 +608,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				var PinsLatLng = [];
 				for ( var Counter = 0; Counter < _Pins.length; Counter++) {
 					PinsLatLng.push ( _Pins [ Counter ].getLatLng ( ) );
-					 
 				}
 				
 				return L.latLngBounds(  PinsLatLng ); 
