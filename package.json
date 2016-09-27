@@ -1,6 +1,6 @@
 {
   "name": "leaflet.marker.pin",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "Pins for Leaflet",
   "main": "src/L.Marker.Pin.Interface.js",
   "directories": {
