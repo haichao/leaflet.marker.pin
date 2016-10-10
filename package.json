@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "dependencies": {
-    "leaflet": "^0.7.7"
+    "leaflet": "^1.0.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
