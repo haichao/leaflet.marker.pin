@@ -8,8 +8,8 @@ describe ( "L.Marker.Pin.Interface tests - Warning : test order is important!", 
 
 	/* get Release ( ) tests */
 	
-	it ( "02 - myInterface.Release return '1.2.0'", function ( ) {
-		expect( myInterface.Release ).toBe ( '1.2.0' );
+	it ( "02 - myInterface.Release return '1.2.3'", function ( ) {
+		expect( myInterface.Release ).toBe ( '1.2.3' );
 	} );
 
 	/* get UserLanguage ( ) and set UserLanguage ( newUserLanguage ) tests */
@@ -143,4 +143,8 @@ describe ( "L.Marker.Pin.Interface tests - Warning : test order is important!", 
 		fail("myInterface.addControl cannot be currently tested in the Unit tests");
 	} );
 	
+	xit ( "27 - myInterface.LatLngBounds cannot be currently tested in the Unit tests", function ( ) {
+		fail("myInterface.LatLngBounds cannot be currently tested in the Unit tests");
+	} );
+
 } );

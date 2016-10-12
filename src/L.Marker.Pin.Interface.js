@@ -311,7 +311,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			The relase number - read only
 
 			*/
-			get Release ( ) { return '1.2.2'; },
+			get Release ( ) { return '1.2.3'; },
 
 			/* 
 			--- UserLanguage  ---
