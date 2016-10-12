@@ -1,10 +1,8 @@
-/* contextmenu  and edit dialog */
-
+/* contextmenu */
 .PinMenu .leaflet-popup-content
 {
 	margin: 1px;
 }
-
 .PinMenu > div
 {
 	background-color: rgb(240,240,240);
@@ -13,7 +11,6 @@
 	border-width : 1px;
 	z-index: 9999;
 }
-
 .PinMenu-EditPinButton,
 .PinMenu-DeletePinButton,
 .PinMenu-CancelPinButton
@@ -37,7 +34,6 @@
 	margin-bottom: 3px;
 	background: linear-gradient(lightgray, white);
 }
-
 .PinMenu-EditPinButton:hover,
 .PinMenu-DeletePinButton:hover,
 .PinMenu-CancelPinButton:hover
@@ -54,6 +50,12 @@
 	padding-right: 1px; 
 	background: linear-gradient(white,lightgray);
 }
+.PinMenu > div.leaflet-popup-tip-container
+{
+	visibility: hidden;
+}
+
+/* edit dialog */
 
 .PinEditDialog > div
 {
@@ -63,8 +65,7 @@
 	border-width : 1px;
 	z-index: 9999;
 }
-.leaflet-container.leaflet-fade-anim > div.leaflet-map-pane > div.leaflet-objects-pane > div.leaflet-popup-pane > div.leaflet-popup.PinMenu.leaflet-zoom-animated > div.leaflet-popup-tip-container,
-.leaflet-container.leaflet-fade-anim > div.leaflet-map-pane > div.leaflet-objects-pane > div.leaflet-popup-pane > div.leaflet-popup.PinEditDialog.leaflet-zoom-animated > div.leaflet-popup-tip-container
+.PinEditDialog > div.leaflet-popup-tip-container
 {
 	visibility: hidden;
 }

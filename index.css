@@ -1,6 +1,6 @@
 html > body > header
 { 
-	z-index : 500;
+	z-index : 999;
 	position: absolute;	
 	text-align : center;
 	color: white;
