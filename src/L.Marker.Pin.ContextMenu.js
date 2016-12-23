@@ -34,6 +34,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 	
 	L.Marker.Pin.ContextMenu = function ( MouseEvent ) {
+
+		var Pins;
+		if ( typeof module !== 'undefined' && module.exports ) {
+			Pins = require ('./L.Marker.Pin.Pins' );
+		}
+		else {
+			Pins = L.marker.pin.pins ( );
+		}
+
+		if ( Pins.readOnly ) {
+			return;
+		}
+		
 		// Variables creation
 		var _Translator;
 		if ( typeof module !== 'undefined' && module.exports ) {
@@ -101,13 +114,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			function ( ) 
 			{ 
 				Map.closePopup ( ); 
-				var Pins;
-				if ( typeof module !== 'undefined' && module.exports ) {
-					Pins = require ('./L.Marker.Pin.Pins' );
-				}
-				else {
-					Pins = L.marker.pin.pins ( );
-				}
 				Pins.remove ( Pin );
 				Map.removeLayer( Pin ); 
 			} 

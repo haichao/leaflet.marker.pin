@@ -58,7 +58,12 @@ Double click on a pin description in the control to zoom on the pin and start th
 
 Drag and drop the pin description in the control to reorder the pins.
 
-### Display a page with the pins description
+## Read only pins 
+
+It's possible to change the pins to 'read only'. In this case, the pin's context menu is disabled, so removing or editing a pin is not possible  and  it's not possible to drag the pins.
+Reordering the pins from the control and editing a pin with a double click on the control are also disabled.
+
+## Display a page with the pins description
 
 The 'View' button on the left opens a new page with the pins description. This page is updated each time a pin is modified, added or deleted.
 
@@ -523,6 +528,14 @@ Default value:
 ### LatLngBounds property
 
 The LatLngBounds of the pins. See leaflet documentation for more about the LatLngBounds
+
+### readOnly property
+
+Set the readOnly property to true or false to disable or enable modifications on the pins.
+
+```
+	L.marker.pin.interface ( ).readOnly = true;
+```
 
 ## Know limitations and problems
 

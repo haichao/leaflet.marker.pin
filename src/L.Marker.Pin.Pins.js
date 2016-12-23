@@ -47,6 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var _NextPinId = 0; // The next pin id to use
 	var _PageLoad = true;
 	var _CallbackFunction = function ( ) {console.log ( '_CallbackFunction ( )');};
+	var _ReadOnly = false;
 	
 	/* 
 	--- getPins ( ) function --- 
@@ -530,11 +531,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						continue;
 					}
 					// and the pin created
+					var draggableIcon = ! this.readOnly;
 					var Pin = new L.Marker.Pin (
 						L.latLng ( parseFloat (StringLatLng [ 0 ]), parseFloat (StringLatLng [ 1 ] ) ),
 						{
 							icon : Category.CategoryIcon,
-							draggable : true,
+							draggable : draggableIcon,
 							className : 'Pin',
 							title : Category.CategoryName,
 							phone : ( PinData.p ? PinData.p : '' ),
@@ -610,7 +612,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					PinsLatLng.push ( _Pins [ Counter ].getLatLng ( ) );
 				}
 				
-				return L.latLngBounds(  PinsLatLng ); 
+				return L.latLngBounds ( PinsLatLng ); 
 			},
 
 			/* 
@@ -621,7 +623,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 			*/
 			
-			get length ( ) {return _Pins.length; }
+			get length ( ) {return _Pins.length; },
+			
+			/* 
+			
+			--- readOnly ---
+			
+			Pins are read only when true. In this case pins cannot be edited, removed or dragged.
+			
+			*/
+
+			set readOnly ( readOnly ) { 
+				_ReadOnly = readOnly; 
+				for ( var Counter = 0; Counter < _Pins.length; Counter ++) {
+					_Pins [ Counter ].options.draggable = ! _ReadOnly;
+				}
+			},
+			get readOnly ( ) { return _ReadOnly; }			
+			
 		};
 	};
 	

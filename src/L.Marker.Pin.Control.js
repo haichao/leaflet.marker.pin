@@ -98,12 +98,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
 	var _onDblClick = function ( MouseEvent ) { 
+
 		var SelectedElement = MouseEvent.target;
 		while ( SelectedElement && SelectedElement.className && ( -1 === SelectedElement.className.indexOf ('PinControl-Pin' ) ) ) {
 			SelectedElement = SelectedElement.parentNode;
 		}
 		if ( SelectedElement && SelectedElement.className && ( -1 !== SelectedElement.className.indexOf ('PinControl-Pin' ) ) ) {
 			var Pin = _Pins.zoomTo ( SelectedElement.dataset.pinRange );
+
+			if ( _Pins.readOnly ) {
+				MouseEvent.stopPropagation ( );
+				return;
+			}
+			
 			var Map = Pin.options.map;
 			var options = {
 				text : Pin.options.text,
@@ -241,6 +248,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
 	var _onDrop = function ( DragEvent ) { 
+		if ( _Pins.readOnly ) {
+			DragEvent.stopPropagation ( );
+			return;
+		}
+		
 		var SelectedElement = DragEvent.target;
 		while ( SelectedElement && SelectedElement.className && ( -1 === SelectedElement.className.indexOf ('PinControl-Pin' ) ) ) {
 			SelectedElement = SelectedElement.parentNode;

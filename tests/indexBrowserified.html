@@ -118,7 +118,6 @@
 				
 				
 				var myInterface = L.marker.pin.interface ( );
-				
 				myInterface.UserLanguage = 'en';
 				myInterface.addDefaultCategories ( );
 				myInterface.addCategory ( 
@@ -160,6 +159,7 @@
 
 				var Map = L.map ( 'Map' ).setView( [ 50.49680, 5.51116 ], 13 );
 				L.tileLayer ( 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" title="Contributeurs de OpenStreetMap">Contributeurs de OpenStreetMap</a> | &copy; <a href="http://www.ouaie.be/" title="http://www.ouaie.be/">Christian Guyette</a>' } ).addTo ( Map );
+
 				Map.on ( 'click', function ( Event ) { myInterface.newPin ( Map, Event.latlng )} );
 				Map.on ( 'contextmenu', function ( Event ) { myInterface.newPin ( Map, Event.latlng )} ); 
 

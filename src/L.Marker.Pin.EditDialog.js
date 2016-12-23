@@ -164,11 +164,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				getPin = L.marker.pin;
 			}
 
+			var Pins;
+			if ( typeof module !== 'undefined' && module.exports ) {
+				Pins = require ('./L.Marker.Pin.Pins' );
+			}
+			else {
+				Pins = L.marker.pin.pins ( );
+			}
+
+			var draggableIcon = ! Pins.readOnly;
+
 			var Pin = getPin (
 				latlng,
 				{
 					icon : _Categories.getAt ( _CategorySelect.selectedIndex ).CategoryIcon,
-					draggable : true,
+					draggable : draggableIcon,
 					className : 'Pin',
 					title : _Categories.getAt ( _CategorySelect.selectedIndex ).CategoryName,
 					phone : _PhoneInput.value,
@@ -181,13 +191,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			);
 
 			// ... and added to the pin's collection ...
-			var Pins;
-			if ( typeof module !== 'undefined' && module.exports ) {
-				Pins = require ('./L.Marker.Pin.Pins' );
-			}
-			else {
-				Pins = L.marker.pin.pins ( );
-			}
 			var OldPos = Pins.push ( Pin );
 
 			// ... a popup and events are added to the pin ...

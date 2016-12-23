@@ -460,6 +460,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 	
 	L.Marker.Pin.ContextMenu = function ( MouseEvent ) {
+
+		var Pins;
+		if ( typeof module !== 'undefined' && module.exports ) {
+			Pins = require ('./L.Marker.Pin.Pins' );
+		}
+		else {
+			Pins = L.marker.pin.pins ( );
+		}
+
+		if ( Pins.readOnly ) {
+			return;
+		}
+		
 		// Variables creation
 		var _Translator;
 		if ( typeof module !== 'undefined' && module.exports ) {
@@ -527,13 +540,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			function ( ) 
 			{ 
 				Map.closePopup ( ); 
-				var Pins;
-				if ( typeof module !== 'undefined' && module.exports ) {
-					Pins = require ('./L.Marker.Pin.Pins' );
-				}
-				else {
-					Pins = L.marker.pin.pins ( );
-				}
 				Pins.remove ( Pin );
 				Map.removeLayer( Pin ); 
 			} 
@@ -677,12 +683,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
 	var _onDblClick = function ( MouseEvent ) { 
+
 		var SelectedElement = MouseEvent.target;
 		while ( SelectedElement && SelectedElement.className && ( -1 === SelectedElement.className.indexOf ('PinControl-Pin' ) ) ) {
 			SelectedElement = SelectedElement.parentNode;
 		}
 		if ( SelectedElement && SelectedElement.className && ( -1 !== SelectedElement.className.indexOf ('PinControl-Pin' ) ) ) {
 			var Pin = _Pins.zoomTo ( SelectedElement.dataset.pinRange );
+
+			if ( _Pins.readOnly ) {
+				MouseEvent.stopPropagation ( );
+				return;
+			}
+			
 			var Map = Pin.options.map;
 			var options = {
 				text : Pin.options.text,
@@ -820,6 +833,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
 	var _onDrop = function ( DragEvent ) { 
+		if ( _Pins.readOnly ) {
+			DragEvent.stopPropagation ( );
+			return;
+		}
+		
 		var SelectedElement = DragEvent.target;
 		while ( SelectedElement && SelectedElement.className && ( -1 === SelectedElement.className.indexOf ('PinControl-Pin' ) ) ) {
 			SelectedElement = SelectedElement.parentNode;
@@ -1258,11 +1276,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				getPin = L.marker.pin;
 			}
 
+			var Pins;
+			if ( typeof module !== 'undefined' && module.exports ) {
+				Pins = require ('./L.Marker.Pin.Pins' );
+			}
+			else {
+				Pins = L.marker.pin.pins ( );
+			}
+
+			var draggableIcon = ! Pins.readOnly;
+
 			var Pin = getPin (
 				latlng,
 				{
 					icon : _Categories.getAt ( _CategorySelect.selectedIndex ).CategoryIcon,
-					draggable : true,
+					draggable : draggableIcon,
 					className : 'Pin',
 					title : _Categories.getAt ( _CategorySelect.selectedIndex ).CategoryName,
 					phone : _PhoneInput.value,
@@ -1275,13 +1303,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			);
 
 			// ... and added to the pin's collection ...
-			var Pins;
-			if ( typeof module !== 'undefined' && module.exports ) {
-				Pins = require ('./L.Marker.Pin.Pins' );
-			}
-			else {
-				Pins = L.marker.pin.pins ( );
-			}
 			var OldPos = Pins.push ( Pin );
 
 			// ... a popup and events are added to the pin ...
@@ -1918,7 +1939,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 			*/
 
-			get LatLngBounds ( ) { return _Pins.LatLngBounds; }
+			get LatLngBounds ( ) { return _Pins.LatLngBounds; },	
+
+			/* 
+			
+			--- readOnly ---
+			
+			Pins are read only. In this case pins cannot be edited, removed or dragged.
+			
+			*/
+			set readOnly ( ReadOnly ) { _Pins.readOnly = ReadOnly; },
+			get readOnly ( ) { return _Pins.readOnly; }
 		};
 	};
 
@@ -1984,6 +2015,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var _NextPinId = 0; // The next pin id to use
 	var _PageLoad = true;
 	var _CallbackFunction = function ( ) {console.log ( '_CallbackFunction ( )');};
+	var _ReadOnly = false;
 	
 	/* 
 	--- getPins ( ) function --- 
@@ -2467,11 +2499,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						continue;
 					}
 					// and the pin created
+					var draggableIcon = ! this.readOnly;
 					var Pin = new L.Marker.Pin (
 						L.latLng ( parseFloat (StringLatLng [ 0 ]), parseFloat (StringLatLng [ 1 ] ) ),
 						{
 							icon : Category.CategoryIcon,
-							draggable : true,
+							draggable : draggableIcon,
 							className : 'Pin',
 							title : Category.CategoryName,
 							phone : ( PinData.p ? PinData.p : '' ),
@@ -2547,7 +2580,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					PinsLatLng.push ( _Pins [ Counter ].getLatLng ( ) );
 				}
 				
-				return L.latLngBounds(  PinsLatLng ); 
+				return L.latLngBounds ( PinsLatLng ); 
 			},
 
 			/* 
@@ -2558,7 +2591,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 			*/
 			
-			get length ( ) {return _Pins.length; }
+			get length ( ) {return _Pins.length; },
+			
+			/* 
+			
+			--- readOnly ---
+			
+			Pins are read only when true. In this case pins cannot be edited, removed or dragged.
+			
+			*/
+
+			set readOnly ( readOnly ) { 
+				_ReadOnly = readOnly; 
+				for ( var Counter = 0; Counter < _Pins.length; Counter ++) {
+					_Pins [ Counter ].options.draggable = ! _ReadOnly;
+				}
+			},
+			get readOnly ( ) { return _ReadOnly; }			
+			
 		};
 	};
 	
